@@ -28,47 +28,46 @@ export const neetData = {
     { id: "phy-ch19", chapterName: "Electricity" },
     { id: "phy-ch20", chapterName: "Nuclear Physics" },
     { id: "phy-ch21", chapterName: "Semiconductor" },
-    { id: "phy-ch22", chapterName: "Recent Trend in Physics" },
 
     // From phy3 (Class 11 alternate structure)
     // 1–5 same but continuing numbering
-    { id: "phy-ch23", chapterName: "Physical Quantity" },
-    { id: "phy-ch24", chapterName: "Vectors" },
-    { id: "phy-ch25", chapterName: "Kinematics" },
-    { id: "phy-ch26", chapterName: "Dynamics" },
-    { id: "phy-ch27", chapterName: "Work, Energy and Power" },
+    { id: "phy-ch22", chapterName: "Physical Quantity" },
+    { id: "phy-ch23", chapterName: "Vectors" },
+    { id: "phy-ch24", chapterName: "Kinematics" },
+    { id: "phy-ch25", chapterName: "Dynamics" },
+    { id: "phy-ch26", chapterName: "Work, Energy and Power" },
 
     // 6–7 → Thermodynamics
+    { id: "phy-ch27", chapterName: "Thermodynamics" },
     { id: "phy-ch28", chapterName: "Thermodynamics" },
-    { id: "phy-ch29", chapterName: "Thermodynamics" },
 
     // 8–12 same
-    { id: "phy-ch30", chapterName: "Wave Motion" },
-    { id: "phy-ch31", chapterName: "Mechanical Wave" },
-    { id: "phy-ch32", chapterName: "Waves in Pipes and Strings" },
-    { id: "phy-ch33", chapterName: "Acoustic Phenomenon" },
-    { id: "phy-ch34", chapterName: "Nature and Propagation of Light" },
+    { id: "phy-ch29", chapterName: "Wave Motion" },
+    { id: "phy-ch30", chapterName: "Mechanical Wave" },
+    { id: "phy-ch31", chapterName: "Waves in Pipes and Strings" },
+    { id: "phy-ch32", chapterName: "Acoustic Phenomenon" },
+    { id: "phy-ch33", chapterName: "Nature and Propagation of Light" },
 
     // 13–15 → Wave Optics
+    { id: "phy-ch34", chapterName: "Wave Optics" },
     { id: "phy-ch35", chapterName: "Wave Optics" },
     { id: "phy-ch36", chapterName: "Wave Optics" },
-    { id: "phy-ch37", chapterName: "Wave Optics" },
 
     // 16–18 same
-    { id: "phy-ch38", chapterName: "Electrical Circuits" },
-    { id: "phy-ch39", chapterName: "Thermoelectric Effects" },
-    { id: "phy-ch40", chapterName: "Magnetic Field" },
+    { id: "phy-ch37", chapterName: "Electrical Circuits" },
+    { id: "phy-ch38", chapterName: "Thermoelectric Effects" },
+    { id: "phy-ch39", chapterName: "Magnetic Field" },
 
     // Remaining from phy2 & phy4 (Class 12 continuation)
-    { id: "phy-ch41", chapterName: "Magnetic Properties of Materials" },
-    { id: "phy-ch42", chapterName: "Electromagnetic Induction" },
-    { id: "phy-ch43", chapterName: "Alternating Current" },
-    { id: "phy-ch44", chapterName: "Electrons" },
-    { id: "phy-ch45", chapterName: "Photons" },
-    { id: "phy-ch46", chapterName: "Semiconductor Devices" },
-    { id: "phy-ch47", chapterName: "Quantization of Energy" },
-    { id: "phy-ch48", chapterName: "Radioactivity" },
-    { id: "phy-ch49", chapterName: "Recent Trend in Physics" },
+    { id: "phy-ch40", chapterName: "Magnetic Properties of Materials" },
+    { id: "phy-ch41", chapterName: "Electromagnetic Induction" },
+    { id: "phy-ch42", chapterName: "Alternating Current" },
+    { id: "phy-ch43", chapterName: "Electrons" },
+    { id: "phy-ch44", chapterName: "Photons" },
+    { id: "phy-ch45", chapterName: "Semiconductor Devices" },
+    { id: "phy-ch46", chapterName: "Quantization of Energy" },
+    { id: "phy-ch47", chapterName: "Radioactivity" },
+    { id: "phy-ch48", chapterName: "Recent Trend in Physics" },
   ],
 
   chemistry: [

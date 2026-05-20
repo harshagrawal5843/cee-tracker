@@ -375,7 +375,7 @@ export default function SubjectPage() {
                                     
                                     const chapterKey = `${subject}-${chapter.id}`;
                                     if (hasSubtopics) {
-                                      // Check/uncheck all subtopics
+                                      // Check/uncheck all subtopics AND the chapter itself
                                       chapter.subtopics.forEach(st => {
                                         const stKey = `${subject}-${st.id}`;
                                         if (isChecked) {
@@ -384,6 +384,12 @@ export default function SubjectPage() {
                                           delete newCompletions[stKey];
                                         }
                                       });
+                                      // Also set/delete the chapter key
+                                      if (isChecked) {
+                                        newCompletions[chapterKey] = true;
+                                      } else {
+                                        delete newCompletions[chapterKey];
+                                      }
                                     } else {
                                       // Simple chapter without subtopics
                                       if (isChecked) {

@@ -1,98 +1,151 @@
 export const neetSubjects = ["physics", "chemistry", "zoology", "botany", "mental-ability-test"];
 
 export const neetData = {
+
   physics: [
-    // From phy1 (1–12 same)
+
+    // From book 1 
     { id: "phy-ch1", chapterName: "Rotational Motion" },
     { id: "phy-ch2", chapterName: "Periodic Motion" },
     { id: "phy-ch3", chapterName: "Fluid Statics" },
     { id: "phy-ch4", chapterName: "Surface Tension" },
     { id: "phy-ch5", chapterName: "Fluid Dynamics" },
     { id: "phy-ch6", chapterName: "Thermodynamics" },
-    { id: "phy-ch7", chapterName: "Thermodynamics" },
-    { id: "phy-ch8", chapterName: "Wave Motion" },
-    { id: "phy-ch9", chapterName: "Mechanical Wave" },
-    { id: "phy-ch10", chapterName: "Waves in Pipes and Strings" },
-    { id: "phy-ch11", chapterName: "Acoustic Phenomenon" },
-    { id: "phy-ch12", chapterName: "Nature and Propagation of Light" },
+    { id: "phy-ch7", chapterName: "Wave Motion" },
+    { id: "phy-ch8", chapterName: "Mechanical Wave" },
+    { id: "phy-ch9", chapterName: "Waves in Pipes and Strings" },
+    { id: "phy-ch10", chapterName: "Acoustic Phenomenon" },
+    { id: "phy-ch11", chapterName: "Nature and Propagation of Light" },
+    { id: "phy-ch12", chapterName: "Wave Optics" },
+    { id: "phy-ch13", chapterName: "Electrical Cicuit" },
+    { id: "phy-ch14", chapterName: "Thermo Electric Effect" },
+    { id: "phy-ch15", chapterName: "Magnetic Field" },
+    { id: "phy-ch16", chapterName: "Magnetic Property of Material" },
+    { id: "phy-ch17", chapterName: "EMI" },
+    { id: "phy-ch18", chapterName: "Alternating Current" },
+    { id: "phy-ch19", chapterName: "Modern Physics" },
+    { id: "phy-ch20", chapterName: "Quantization of Energy" },
+    { id: "phy-ch21", chapterName: "RadioActivity" },
+    { id: "phy-ch22", chapterName: "Recent Trend in Physics" },
 
-    // 13–17 → Ray Optics
-    { id: "phy-ch13", chapterName: "Ray Optics" },
-    { id: "phy-ch14", chapterName: "Ray Optics" },
-    { id: "phy-ch15", chapterName: "Ray Optics" },
-    { id: "phy-ch16", chapterName: "Ray Optics" },
-    { id: "phy-ch17", chapterName: "Ray Optics" },
-
-    // From phy1 continuation
-    { id: "phy-ch18", chapterName: "Electrostatics" },
-    { id: "phy-ch19", chapterName: "Electricity" },
-    { id: "phy-ch20", chapterName: "Nuclear Physics" },
-    { id: "phy-ch21", chapterName: "Semiconductor" },
-
-    // From phy3 (Class 11 alternate structure)
-    // 1–5 same but continuing numbering
-    { id: "phy-ch22", chapterName: "Physical Quantity" },
-    { id: "phy-ch23", chapterName: "Vectors" },
-    { id: "phy-ch24", chapterName: "Kinematics" },
-    { id: "phy-ch25", chapterName: "Dynamics" },
-    { id: "phy-ch26", chapterName: "Work, Energy and Power" },
-
-    // 6–7 → Thermodynamics
-    { id: "phy-ch27", chapterName: "Thermodynamics" },
-    { id: "phy-ch28", chapterName: "Thermodynamics" },
-
-    // 8–12 same
-    { id: "phy-ch29", chapterName: "Wave Motion" },
-    { id: "phy-ch30", chapterName: "Mechanical Wave" },
-    { id: "phy-ch31", chapterName: "Waves in Pipes and Strings" },
-    { id: "phy-ch32", chapterName: "Acoustic Phenomenon" },
-    { id: "phy-ch33", chapterName: "Nature and Propagation of Light" },
-
-    // 13–15 → Wave Optics
-    { id: "phy-ch34", chapterName: "Wave Optics" },
-    { id: "phy-ch35", chapterName: "Wave Optics" },
-    { id: "phy-ch36", chapterName: "Wave Optics" },
-
-    // 16–18 same
-    { id: "phy-ch37", chapterName: "Electrical Circuits" },
-    { id: "phy-ch38", chapterName: "Thermoelectric Effects" },
-    { id: "phy-ch39", chapterName: "Magnetic Field" },
-
-    // Remaining from phy2 & phy4 (Class 12 continuation)
-    { id: "phy-ch40", chapterName: "Magnetic Properties of Materials" },
-    { id: "phy-ch41", chapterName: "Electromagnetic Induction" },
-    { id: "phy-ch42", chapterName: "Alternating Current" },
-    { id: "phy-ch43", chapterName: "Electrons" },
-    { id: "phy-ch44", chapterName: "Photons" },
-    { id: "phy-ch45", chapterName: "Semiconductor Devices" },
-    { id: "phy-ch46", chapterName: "Quantization of Energy" },
-    { id: "phy-ch47", chapterName: "Radioactivity" },
-    { id: "phy-ch48", chapterName: "Recent Trend in Physics" },
+    // from book 2
+    { id: "phy-ch23", chapterName: "Physical Quantity" },
+    { id: "phy-ch24", chapterName: "Vectors" },
+    { id: "phy-ch25", chapterName: "Kinematics" },
+    { id: "phy-ch26", chapterName: "Dynamics" },
+    { id: "phy-ch27", chapterName: "Work, Energy and Power" },
+    { id: "phy-ch28", chapterName: "Circulor Motion" },
+    { id: "phy-ch29", chapterName: "Gravitation" },
+    { id: "phy-ch30", chapterName: "Elasticity" },
+    { id: "phy-ch31", chapterName: "Heat and Temperature" },
+    { id: "phy-ch32", chapterName: "Thermal Expansion" },
+    { id: "phy-ch33", chapterName: "Rate of Heat Flow" },
+    { id: "phy-ch34", chapterName: "Thermal Properties of Matter" },
+    { id: "phy-ch35", chapterName: "Ideal Gas" },
+    { id: "phy-ch36", chapterName: "Ray Optics" },
+    { id: "phy-ch37", chapterName: "Electrostatics" },
+    { id: "phy-ch38", chapterName: "Electricity" },
+    { id: "phy-ch39", chapterName: "Nuclear Physics" },
+    { id: "phy-ch40", chapterName: "Semiconductor" },
   ],
 
   chemistry: [
-    { id: "chem-ch1", chapterName: "Some Basic Concepts of Chemistry" },
-    { id: "chem-ch2", chapterName: "Structure of Atom" },
-    { id: "chem-ch3", chapterName: "States of Matter" },
-    { id: "chem-ch4", chapterName: "Chemical Thermodynamics" },
-    { id: "chem-ch5", chapterName: "Solutions" },
-    { id: "chem-ch6", chapterName: "Equilibrium" },
-    { id: "chem-ch7", chapterName: "Redox Reactions and Electrochemistry" },
-    { id: "chem-ch8", chapterName: "Chemical Kinetics" },
-    { id: "chem-ch9", chapterName: "Surface Chemistry" },
-    { id: "chem-ch10", chapterName: "Periodic Table" },
-    { id: "chem-ch11", chapterName: "Chemical Bonding" },
-    { id: "chem-ch12", chapterName: "Hydrogen" },
-    { id: "chem-ch13", chapterName: "s-Block Elements" },
-    { id: "chem-ch14", chapterName: "p-Block Elements" },
-    { id: "chem-ch15", chapterName: "d & f Block Elements" },
-    { id: "chem-ch16", chapterName: "Coordination Compounds" },
-    { id: "chem-ch17", chapterName: "Organic Basics" },
-    { id: "chem-ch18", chapterName: "Hydrocarbons" },
-    { id: "chem-ch19", chapterName: "Halo Compounds" },
-    { id: "chem-ch20", chapterName: "Alcohols & Ethers" },
-    { id: "chem-ch21", chapterName: "Amines" },
-    { id: "chem-ch22", chapterName: "Biomolecules" },
+    // Physical Chemistry (Unit 1)
+    { id: "chem-ch1", chapterName: "Volumetric Analysis", unit: "Physical Chemistry" },
+    { id: "chem-ch2", chapterName: "Ionic Equilibrium", unit: "Physical Chemistry" },
+    { id: "chem-ch3", chapterName: "Chemical Kinetics", unit: "Physical Chemistry" },
+    { id: "chem-ch4", chapterName: "Chemical Thermodynamics", unit: "Physical Chemistry" },
+    { id: "chem-ch5", chapterName: "Electrochemistry", unit: "Physical Chemistry" },
+    { id: "chem-ch6", chapterName: "Foundation and Fundamental", unit: "Physical Chemistry" },
+    { id: "chem-ch7", chapterName: "Stoichiometry", unit: "Physical Chemistry" },
+    { id: "chem-ch8", chapterName: "Atomic Structure", unit: "Physical Chemistry" },
+    { id: "chem-ch9", chapterName: "Periodic Table", unit: "Physical Chemistry" },
+    { id: "chem-ch10", chapterName: "Chemical Bonding and Shapes of Molecules", unit: "Physical Chemistry" },
+    { id: "chem-ch11", chapterName: "Oxidation and Reduction", unit: "Physical Chemistry" },
+    { id: "chem-ch12", chapterName: "States of Matter", unit: "Physical Chemistry" },
+    { id: "chem-ch13", chapterName: "Chemical Equilibrium", unit: "Physical Chemistry" },
+
+    // Organic Chemistry (Unit 2)
+    { id: "chem-ch14", chapterName: "Haloalkanes & Haloarenes", unit: "Organic Chemistry" },
+    { id: "chem-ch15", chapterName: "Alcohol", unit: "Organic Chemistry" },
+    { id: "chem-ch16", chapterName: "Phenol", unit: "Organic Chemistry" },
+    { id: "chem-ch17", chapterName: "Ether", unit: "Organic Chemistry" },
+    { id: "chem-ch18", chapterName: "Aldehydes and ketones", unit: "Organic Chemistry" },
+    { id: "chem-ch19", chapterName: "Carboxylic Acids and Its Derivatives", unit: "Organic Chemistry" },
+    { id: "chem-ch20", chapterName: "Nitro Compounds", unit: "Organic Chemistry" },
+    { id: "chem-ch21", chapterName: "Amino Coumpounds", unit: "Organic Chemistry" },
+    { id: "chem-ch22", chapterName: "Organometallic Compounds", unit: "Organic Chemistry" },
+    { id: "chem-ch23", chapterName: "Basic Concept of Organic Chemistry", unit: "Organic Chemistry" },
+    { 
+      id: "chem-ch24", 
+      chapterName: "Fundamental Principles of Organic Chemistry", 
+      unit: "Organic Chemistry",
+      subtopics: [
+        { id: "chem-ch24-st1", name: "Nomenclature" },
+        { id: "chem-ch24-st2", name: "Isomerism" },
+        { id: "chem-ch24-st3", name: "Reaction Mechanism" },
+        { id: "chem-ch24-st4", name: "Detection of Heteroelements" }
+      ]
+    },
+    {
+       id: "chem-ch25", 
+       chapterName: "Hydrocarbons", 
+       unit: "Organic Chemistry",
+       subtopics:[
+        {id:"chem-ch25-st-1", name:"Alkane"},
+        {id:"chem-ch25-st-2", name:"Alkene"},
+        {id:"chem-ch25-st-3", name:"Alkyne"},
+       ]
+    },
+    { id: "chem-ch26", chapterName: "Aromatic Hydrocarbon", unit: "Organic Chemistry" },
+
+    // Inorganic Chemistry (Unit 3)
+    { id: "chem-ch27", chapterName: "Transition Metals", unit: "Inorganic Chemistry" },
+    {
+       id: "chem-ch28", 
+       chapterName: "Studies of Heavy Metals", unit: "Inorganic Chemistry",
+       subtopics:[
+        {id:"chem-ch28-st1", name:"Copper"}, 
+        {id:"chem-ch28-st2", name:"Zinc"}, 
+        {id:"chem-ch28-st3", name:"Mercury"}, 
+        {id:"chem-ch28-st4", name:"Iron"}, 
+        {id:"chem-ch28-st5", name:"Silver"}, 
+       ]
+    },
+    {
+       id: "chem-ch29", 
+       chapterName: "Non-Metals", 
+       unit: "Inorganic Chemistry",
+       subtopics:[
+        {id:"chem-ch29-st1", name:"Hydrogen"},
+        {id:"chem-ch29-st2", name:"Oxygen and Ozone"},
+        {id:"chem-ch29-st3", name:"Nitrogen"},
+        {id:"chem-ch29-st4", name:"Halogen"},
+        {id:"chem-ch29-st5", name:"Carbon"},
+        {id:"chem-ch29-st6", name:"Phosphorus"},
+        {id:"chem-ch29-st7", name:"Sulphur and its Compounds"},
+       ]
+    },
+    { 
+      id: "chem-ch30", 
+      chapterName: "Metals", 
+      unit: "Inorganic Chemistry",
+      subtopics:[
+        {id:"chem-30-st1", name:"Metallurgy"},
+        {id:"chem-30-st2", name:"Alkali Metals"},
+        {id:"chem-30-st3", name:"Alkaline Earth Meral"},
+      ]
+    },
+    { id: "chem-ch31", chapterName: "Bio-Inorganic Chemistry", unit: "Inorganic Chemistry" },
+
+
+    // Applied Chemistry (Unit 4)
+    { id: "chem-ch32", chapterName: "Cement", unit: "Applied Chemistry" },
+    { id: "chem-ch33", chapterName: "Paper and Pulp", unit: "Applied Chemistry" },
+    { id: "chem-ch34", chapterName: "Nuclear Chemistry and Application of ratioactivity", unit: "Applied Chemistry" },
+    { id: "chem-ch35", chapterName: "Polymers, Dyes and Drugs", unit: "Applied Chemistry" },
+    { id: "chem-ch36", chapterName: "Fundamentals of Applied Chemistry", unit: "Applied Chemistry" },
+    { id: "chem-ch37", chapterName: "Modern Chemical Manufactures", unit: "Applied Chemistry" },
   ],
 
   zoology: [

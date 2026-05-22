@@ -1,244 +1,216 @@
-# CEE Tracker - NEET Exam Preparation Tracker
+# CEETracker — Complete Project README
 
-A modern, responsive progress tracking application for NEET aspirants to monitor their preparation across Physics, Chemistry, Zoology, and Botany subjects.
+CEETracker is a focused study planner and progress tracker built on Next.js (App Router), React, Tailwind CSS and optional Firebase. It helps students organize subjects and chapters, run short study sessions, track streaks, and review quiz/history data.
 
-## Features
+This README is a complete, developer-friendly guide covering installation, features, routes, data model, theme, screenshots, and common troubleshooting steps.
 
-✨ **Modern UI** - Clean, responsive design with dark/light theme support
-📊 **Progress Tracking** - Real-time progress calculations for each subject
-🎯 **Subject-wise Organization** - Structured data for 4 core NEET subjects
-📚 **Chapter Management** - Expandable accordion for lectures and problems
-✅ **Task Completion** - Check off lectures and problem sets as completed
-💾 **Local Storage** - All progress is saved locally in your browser
-⚡ **Fast Performance** - Built with Next.js 14 and optimized components
+**Quick links**
 
-## Technology Stack
+- Dev server: `npm run dev` (opens on the port printed in the terminal; commonly `http://localhost:3000`).
+- Production build: `npm run build && npm start`.
 
-- **Frontend Framework**: Next.js 14 (App Router)
-- **UI Library**: React 18
-- **Styling**: Tailwind CSS
-- **Language**: Vanilla JavaScript (ES6+)
-- **Persistence**: Browser localStorage
-- **Icons**: Unicode Emoji
+## Table of contents
 
-## Project Structure
+- Project overview
+- Features
+- Routes & pages
+- Key components and files
+- Data model (localStorage & Firestore paths)
+- Theme (dark / light) and default
+- Installation & local development
+- Screenshots (placeholders + capture instructions)
+- Troubleshooting
+- Contributing
 
-```
-CEETracker/
-├── app/
-│   ├── layout.js              # Root layout
-│   ├── page.js                # Homepage/Dashboard
-│   ├── globals.css            # Global styles
-│   ├── not-found.js           # 404 page
-│   └── subject/
-│       └── [name]/
-│           ├── page.js        # Subject detail page
-│           └── layout.js      # Subject layout with static params
-├── components/
-│   ├── ProgressBar.js         # Linear progress bar component
-│   ├── CircularProgress.js    # Circular progress indicator
-│   ├── SubjectCard.js         # Subject card for dashboard
-│   ├── SubjectNavigation.js   # Quick subject switcher
-│   └── ChapterAccordion.js    # Expandable chapter section
-├── lib/
-│   └── storage.js             # localStorage utilities & progress calculations
-├── data.js                    # NEET curriculum data
-├── package.json               # Dependencies
-├── next.config.mjs            # Next.js config
-├── tailwind.config.js         # Tailwind configuration
-├── postcss.config.mjs         # PostCSS config
-├── jsconfig.json              # JS path aliases
-└── README.md                  # This file
-```
+## Project overview
 
-## Getting Started
+CEETracker provides:
 
-### Prerequisites
+- A dashboard with subject cards and progress summaries.
+- Per-subject pages with chapter lists and completion tracking.
+- A daily challenge / quiz flow with persistence and per-user history.
+- A persistent study timer with per-day snapshots and a dedicated Study Timer page.
+- Streak tracking and a challenge history browsing page.
 
-- Node.js 18+ installed
-- npm or yarn package manager
+The app aims to work offline-first using `localStorage` and optionally sync to Firestore when Firebase is configured.
 
-### Installation
+## Features (expanded)
 
-1. Navigate to the project directory:
-```bash
+- Dashboard: aggregated view of subjects with progress indicators and quick links to subject pages.
+- Subject page: chapter accordion with check/uncheck, subtopics, filters, and search.
+- Daily Challenge: server-assisted plan generation (calls `/api/generate-daily-plan`) with deterministic fallback and caching.
+- Quiz & Result Persistence: quiz results are written to localStorage and (optionally) Firestore; history page allows per-day browsing and per-question review.
+- Study Timer: start/pause/reset session timer; snapshots are recorded at midnight and shown in the Study Timer page.
+- Streak Tracker: increments on challenge completion, persisted and synchronized between open tabs.
+- Theme support: dark and light modes; default is dark.
+
+## Routes & pages
+
+Primary user-facing routes in the app (App Router):
+
+- `/` — Dashboard / Landing (app/page.js)
+- `/subject/[name]` — Per-subject detail page (app/subject/[name]/page.js)
+- `/study-timer` — Dedicated Study Timer page (app/study-timer/page.js)
+- `/challenge-history` — Challenge history and stats (app/challenge-history/page.js)
+- `/login` — Sign-in page (components/LoginComponent.js used in auth flows)
+- `/progress` — (If present) aggregated progress view — otherwise see Dashboard
+
+API routes:
+
+- `/api/generate-daily-plan` — Generates or retrieves cached daily plan. Uses Google Gemini when configured and falls back to deterministic plan generation when the AI service is unavailable.
+
+Use the route file references to inspect code:
+
+- [app/page.js](app/page.js#L1)
+- [app/subject/[name]/page.js](app/subject/[name]/page.js#L1)
+- [app/study-timer/page.js](app/study-timer/page.js#L1)
+- [app/challenge-history/page.js](app/challenge-history/page.js#L1)
+- [app/api/generate-daily-plan/route.js](app/api/generate-daily-plan/route.js#L1)
+
+## Key components & where to find them
+
+- `components/Navbar.js` — main navigation, includes links to Study Timer and Challenge History and shows a compact streak badge.
+- `components/SubjectCard.js` — subject summary card used on the dashboard.
+- `components/ChapterAccordion.js` — expandable chapter entries with checkboxes and nested items.
+- `components/TodaysPlan.js` — today's plan + daily challenge UI, triggers quiz flow and records progress.
+- `components/QuizPage.js` — quiz UI that captures per-question correctness and posts results to history.
+- `components/StudyTimer.js` — shared timer UI used both in navbar and in dedicated Study Timer page.
+- `components/StreakTracker.js` — dashboard streak UI and logic.
+- `components/ThemeToggle.js` — theme toggle UI (light/dark).
+
+Utilities and libraries:
+
+- `lib/storage.js` — read/write helpers for localStorage, theme helpers, study-timer helpers, and keys used across the app.
+- `lib/dailyChallenge.js` — date helpers, plan/progress keys, streak helpers, timer snapshot helpers and event emitters.
+- `lib/firebase.js` — optional Firebase initialization (auth + Firestore) used when `.env.local` is configured.
+
+## Data model — localStorage keys & Firestore paths
+
+LocalStorage keys (used by `lib/storage.js` and other helpers):
+
+- `cee-tracker-theme` — theme preference (`light` | `dark`). Default: `dark`.
+- `study-streak` — streak object: {lastCheckInDate: "YYYY-MM-DD", count: number, ...}.
+- `daily-challenge-history` — aggregated local history for offline-first reads (structure: { dateString: { subject: [...results] } }).
+- `study-timer-snapshots` — per-day timer totals recorded on midnight rollover.
+
+Firestore paths (optional — when Firebase is configured):
+
+- `dailyPlans/{date}` — cached daily plan documents created by `/api/generate-daily-plan` server code.
+- `users/{userId}/dailyChallengeHistory/{date}` — per-user challenge history documents (mirrors local history when sync is enabled).
+
+## Theme (Dark / Light)
+
+Dark mode is the default. Theme utilities are implemented in `lib/storage.js`:
+
+- `readThemePreference()` — returns `dark` by default unless user changed it.
+- `writeThemePreference(theme)` — sets `light` or `dark` and updates `document.documentElement.classList`.
+- `applyStoredThemePreference()` — helper used at boot to apply the theme before React paints.
+
+User-facing toggle: `components/ThemeToggle.js` listens for the `cee-theme-updated` event and toggles theme. You can also toggle theme manually in the browser console:
+
+1. Make the page dark: `localStorage.setItem('cee-tracker-theme','dark'); document.documentElement.classList.add('dark');`
+2. Make the page light: `localStorage.setItem('cee-tracker-theme','light'); document.documentElement.classList.remove('dark');`
+
+If you want to change the default theme to light by code, update `readThemePreference()` in [lib/storage.js](lib/storage.js#L1) to return `light` instead of `dark`.
+
+## Installation & local development
+
+Prerequisites: Node 18+ recommended.
+
+1. Clone the repo
+
+git clone <repo-url>
 cd CEETracker
-```
 
-2. Install dependencies:
-```bash
+2. Install dependencies
+
 npm install
-# or
-yarn install
-```
 
-3. Run the development server:
-```bash
+3. Start dev server
+
 npm run dev
-# or
-yarn dev
-```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open the URL printed by the dev server (usually `http://localhost:3000`).
 
-### Building for Production
+Build for production:
 
-```bash
 npm run build
 npm start
-# or
-yarn build
-yarn start
-```
 
-## Data Structure
+Useful commands
 
-The curriculum is organized in `data.js` with the following structure:
+- `npx prettier --write .` — format files
+- `npm run dev` — start dev server
+- `npm run build` — production build
 
-```javascript
-neetData = {
-  physics: [
-    {
-      id: "phy-ch1",
-      chapterName: "Chapter Name",
-      lectures: [
-        {
-          id: "phy-ch1-lec1",
-          title: "Lecture Title",
-          duration: "MM:SS",
-          link: "https://..."
-        }
-      ],
-      problems: [
-        {
-          id: "phy-ch1-prob1",
-          title: "Problem Set Title",
-          platform: "NCERT/PYQ",
-          link: "https://..."
-        }
-      ]
-    }
-  ],
-  chemistry: [...],
-  zoology: [...],
-  botany: [...]
-}
-```
+## Screenshots (placeholders)
 
-## Storage Schema
+Add screenshots under `public/screenshots/` and reference them here. Suggested screenshot set:
 
-All completion data is stored in localStorage under `neet-tracker-completions`:
+- `public/screenshots/dark-home.png` — Dashboard in dark mode
+- `public/screenshots/light-home.png` — Dashboard in light mode
+- `public/screenshots/study-timer.png` — Study Timer page
+- `public/screenshots/challenge-history.png` — Challenge history page
+- `public/screenshots/subject-page.png` — Subject detail with chapter list
 
-```javascript
-{
-  "physics-phy-ch1-lec-phy-ch1-lec1": true,
-  "physics-phy-ch1-prob-phy-ch1-prob1": true,
-  // ... more entries
-}
-```
+Example Markdown embed (screenshots captured and added to `public/screenshots`):
 
-## Key Components
+- Dark dashboard: ![Dark Dashboard](public/screenshots/dark-home.png)
+- Light dashboard: ![Light Dashboard](public/screenshots/light-home.png)
+- Dark study timer: ![Dark Study Timer](public/screenshots/dark-study-timer.png)
+- Light study timer: ![Light Study Timer](public/screenshots/light-study-timer.png)
+- Dark challenge history: ![Dark Challenge History](public/screenshots/dark-challenge-history.png)
+- Light challenge history: ![Light Challenge History](public/screenshots/light-challenge-history.png)
+- Dark subject page (Physics): ![Dark Subject Physics](public/screenshots/dark-subject-Physics.png)
+- Light subject page (Physics): ![Light Subject Physics](public/screenshots/light-subject-Physics.png)
 
-### SubjectCard
-Displays a subject with progress bar, percentage, and chapter stats. Located in `components/SubjectCard.js`
+Capture tips (manual):
 
-### ProgressBar
-Linear progress indicator with gradient. Supports different sizes (sm, md, lg). Located in `components/ProgressBar.js`
+- Start dev server: `npm run dev`
+- Visit the page you want to capture and toggle the theme if needed.
+- Use your OS screenshot tool or `npx playwright screenshot --url=http://localhost:3000 --output=public/screenshots/dark-home.png` (example — install Playwright first).
 
-### CircularProgress
-Circular progress indicator with percentage. Located in `components/CircularProgress.js`
+If you'd like, I can automatically capture and add these screenshots to the repo — tell me which pages you want captured and I'll run them and update README with the actual images.
 
-### ChapterAccordion
-Expandable section showing lectures and problems with checkboxes. Located in `components/ChapterAccordion.js`
+## API: `/api/generate-daily-plan`
 
-### SubjectNavigation
-Quick navigation buttons to switch between subjects. Located in `components/SubjectNavigation.js`
+Server route responsibilities:
 
-## Extending the Application
+- Attempts to generate a daily plan using Google Gemini (if configured).
+- Falls back through a chain of Gemini models and to a deterministic generator if the AI service is unavailable.
+- Caches the generated plan in Firestore at `dailyPlans/{date}` (if Firestore is configured) and returns the plan JSON to clients.
 
-### Adding More Data
+See: [app/api/generate-daily-plan/route.js](app/api/generate-daily-plan/route.js#L1)
 
-Edit `data.js` to add more chapters, lectures, and problems:
+## Behavior details & UX notes
 
-```javascript
-{
-  id: "phy-ch4",
-  chapterName: "New Chapter",
-  lectures: [
-    {
-      id: "phy-ch4-lec1",
-      title: "New Lecture",
-      duration: "45:30",
-      link: "https://youtube.com/..."
-    }
-  ],
-  problems: [
-    {
-      id: "phy-ch4-prob1",
-      title: "New Problem Set",
-      platform: "NCERT",
-      link: "https://ncert.nic.in/"
-    }
-  ]
-}
-```
+- Daily Challenge flow: When the user opens Today's Plan the app requests `/api/generate-daily-plan`. When a quiz is completed the result object (score, answers, completedAt) is saved into local history and optionally pushed to Firestore.
+- Streak updates: completing a daily challenge triggers `incrementStudyStreakIfNeeded()` in `lib/dailyChallenge.js`. The navbar and dashboard listen to `study-streak-updated` events to keep UI in sync across tabs.
+- Study Timer: the timer updates a snapshot every tick and records a midnight rollover snapshot into `study-timer-snapshots` so totals per day are preserved even if the user leaves the app open overnight.
 
-### Customizing Styles
+## Troubleshooting & common fixes
 
-Tailwind configuration is in `tailwind.config.js`. Modify theme colors and utilities as needed.
+- If the dev server fails to start: remove any process holding port 3000 or run `npm run dev -- -p <port>` to pick a different port.
+- If you see UI mismatch or missing dark styles: verify `document.documentElement` contains `class="dark"` for dark mode. Run `applyStoredThemePreference()` from `lib/storage.js` at boot time.
+- If Firebase features fail: check `.env.local` variables and restart the server.
 
-### Adding New Subjects
+## Contributing
 
-1. Add to `neetSubjects` array in `data.js`
-2. Add data to `neetData` object in `data.js`
-3. Update `generateStaticParams()` in `app/subject/[name]/layout.js`
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Performance Tips
-
-- Progress calculations are memoized to prevent unnecessary recalculations
-- localStorage operations are batched for efficiency
-- Dynamic imports and code splitting are handled by Next.js
-- Images and static assets are optimized
-
-## Troubleshooting
-
-**Progress not saving?**
-- Check browser localStorage is enabled
-- Clear cache if issues persist with old data
-
-**Page not loading?**
-- Ensure Node.js version is 18+
-- Try clearing `node_modules` and reinstalling: `npm install`
-
-**Styling issues?**
-- Rebuild Tailwind: `npm run build`
-- Clear Next.js cache: `rm -rf .next`
-
-## Future Enhancements
-
-- [ ] Cloud sync for progress across devices
-- [ ] Study schedule/timeline feature
-- [ ] Notes section for each chapter
-- [ ] Mock tests integration
-- [ ] Performance analytics & insights
-- [ ] Offline PWA support
-- [ ] Dark/Light theme toggle UI
+1. Fork → branch → implement
+2. Run `npm run dev` and validate changes
+3. Run `npx prettier --write .`
+4. Open a PR with concise description and screenshots (if UI changes)
 
 ## License
 
-Open source - Free to use and modify
-
-## Support
-
-For issues or feature requests, please reach out to the maintainer.
+No license file included. Add a `LICENSE` file or contact the project owner for licensing terms.
 
 ---
 
-**Happy Learning! Good luck with your NEET preparation! 🚀**
+Would you like me to:
+
+- (A) Add the screenshot files under `public/screenshots/` automatically and embed them into this README?
+- (B) Run `npx prettier --write README.md` and commit the change?
+- (C) Also create a short CONTRIBUTING.md and a simple developer checklist?
+
+Tell me which actions to take next and I'll proceed.

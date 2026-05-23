@@ -1,6 +1,6 @@
 # CEE Tracker Project
 
-This is a comprehensive NEET examination preparation tracker built with modern web technologies.
+This is a comprehensive CEE examination preparation tracker built with modern web technologies.
 
 ## Quick Start
 
@@ -25,4 +25,4 @@ Visit [http://localhost:3000](http://localhost:3000) to see the application.
 - `/app` - Next.js pages and layouts
 - `/components` - Reusable React components
 - `/lib` - Utility functions for storage and calculations
-- `/data.js` - NEET curriculum data
+- `/data.js` - CEE curriculum data

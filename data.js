@@ -1,10 +1,14 @@
-export const neetSubjects = ["physics", "chemistry", "zoology", "botany", "mental-ability-test"];
+export const ceeSubjects = [
+  "physics",
+  "chemistry",
+  "zoology",
+  "botany",
+  "mental-ability-test",
+];
 
-export const neetData = {
-
+export const ceeData = {
   physics: [
-
-    // From book 1 
+    // From book 1
     { id: "phy-ch1", chapterName: "Rotational Motion" },
     { id: "phy-ch2", chapterName: "Periodic Motion" },
     { id: "phy-ch3", chapterName: "Fluid Statics" },
@@ -51,101 +55,213 @@ export const neetData = {
 
   chemistry: [
     // Physical Chemistry (Unit 1)
-    { id: "chem-ch1", chapterName: "Volumetric Analysis", unit: "Physical Chemistry" },
-    { id: "chem-ch2", chapterName: "Ionic Equilibrium", unit: "Physical Chemistry" },
-    { id: "chem-ch3", chapterName: "Chemical Kinetics", unit: "Physical Chemistry" },
-    { id: "chem-ch4", chapterName: "Chemical Thermodynamics", unit: "Physical Chemistry" },
-    { id: "chem-ch5", chapterName: "Electrochemistry", unit: "Physical Chemistry" },
-    { id: "chem-ch6", chapterName: "Foundation and Fundamental", unit: "Physical Chemistry" },
-    { id: "chem-ch7", chapterName: "Stoichiometry", unit: "Physical Chemistry" },
-    { id: "chem-ch8", chapterName: "Atomic Structure", unit: "Physical Chemistry" },
-    { id: "chem-ch9", chapterName: "Periodic Table", unit: "Physical Chemistry" },
-    { id: "chem-ch10", chapterName: "Chemical Bonding and Shapes of Molecules", unit: "Physical Chemistry" },
-    { id: "chem-ch11", chapterName: "Oxidation and Reduction", unit: "Physical Chemistry" },
-    { id: "chem-ch12", chapterName: "States of Matter", unit: "Physical Chemistry" },
-    { id: "chem-ch13", chapterName: "Chemical Equilibrium", unit: "Physical Chemistry" },
+    {
+      id: "chem-ch1",
+      chapterName: "Volumetric Analysis",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch2",
+      chapterName: "Ionic Equilibrium",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch3",
+      chapterName: "Chemical Kinetics",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch4",
+      chapterName: "Chemical Thermodynamics",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch5",
+      chapterName: "Electrochemistry",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch6",
+      chapterName: "Foundation and Fundamental",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch7",
+      chapterName: "Stoichiometry",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch8",
+      chapterName: "Atomic Structure",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch9",
+      chapterName: "Periodic Table",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch10",
+      chapterName: "Chemical Bonding and Shapes of Molecules",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch11",
+      chapterName: "Oxidation and Reduction",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch12",
+      chapterName: "States of Matter",
+      unit: "Physical Chemistry",
+    },
+    {
+      id: "chem-ch13",
+      chapterName: "Chemical Equilibrium",
+      unit: "Physical Chemistry",
+    },
 
     // Organic Chemistry (Unit 2)
-    { id: "chem-ch14", chapterName: "Haloalkanes & Haloarenes", unit: "Organic Chemistry" },
+    {
+      id: "chem-ch14",
+      chapterName: "Haloalkanes & Haloarenes",
+      unit: "Organic Chemistry",
+    },
     { id: "chem-ch15", chapterName: "Alcohol", unit: "Organic Chemistry" },
     { id: "chem-ch16", chapterName: "Phenol", unit: "Organic Chemistry" },
     { id: "chem-ch17", chapterName: "Ether", unit: "Organic Chemistry" },
-    { id: "chem-ch18", chapterName: "Aldehydes and ketones", unit: "Organic Chemistry" },
-    { id: "chem-ch19", chapterName: "Carboxylic Acids and Its Derivatives", unit: "Organic Chemistry" },
-    { id: "chem-ch20", chapterName: "Nitro Compounds", unit: "Organic Chemistry" },
-    { id: "chem-ch21", chapterName: "Amino Coumpounds", unit: "Organic Chemistry" },
-    { id: "chem-ch22", chapterName: "Organometallic Compounds", unit: "Organic Chemistry" },
-    { id: "chem-ch23", chapterName: "Basic Concept of Organic Chemistry", unit: "Organic Chemistry" },
-    { 
-      id: "chem-ch24", 
-      chapterName: "Fundamental Principles of Organic Chemistry", 
+    {
+      id: "chem-ch18",
+      chapterName: "Aldehydes and ketones",
+      unit: "Organic Chemistry",
+    },
+    {
+      id: "chem-ch19",
+      chapterName: "Carboxylic Acids and Its Derivatives",
+      unit: "Organic Chemistry",
+    },
+    {
+      id: "chem-ch20",
+      chapterName: "Nitro Compounds",
+      unit: "Organic Chemistry",
+    },
+    {
+      id: "chem-ch21",
+      chapterName: "Amino Coumpounds",
+      unit: "Organic Chemistry",
+    },
+    {
+      id: "chem-ch22",
+      chapterName: "Organometallic Compounds",
+      unit: "Organic Chemistry",
+    },
+    {
+      id: "chem-ch23",
+      chapterName: "Basic Concept of Organic Chemistry",
+      unit: "Organic Chemistry",
+    },
+    {
+      id: "chem-ch24",
+      chapterName: "Fundamental Principles of Organic Chemistry",
       unit: "Organic Chemistry",
       subtopics: [
         { id: "chem-ch24-st1", name: "Nomenclature" },
         { id: "chem-ch24-st2", name: "Isomerism" },
         { id: "chem-ch24-st3", name: "Reaction Mechanism" },
-        { id: "chem-ch24-st4", name: "Detection of Heteroelements" }
-      ]
+        { id: "chem-ch24-st4", name: "Detection of Heteroelements" },
+      ],
     },
     {
-       id: "chem-ch25", 
-       chapterName: "Hydrocarbons", 
-       unit: "Organic Chemistry",
-       subtopics:[
-        {id:"chem-ch25-st-1", name:"Alkane"},
-        {id:"chem-ch25-st-2", name:"Alkene"},
-        {id:"chem-ch25-st-3", name:"Alkyne"},
-       ]
+      id: "chem-ch25",
+      chapterName: "Hydrocarbons",
+      unit: "Organic Chemistry",
+      subtopics: [
+        { id: "chem-ch25-st-1", name: "Alkane" },
+        { id: "chem-ch25-st-2", name: "Alkene" },
+        { id: "chem-ch25-st-3", name: "Alkyne" },
+      ],
     },
-    { id: "chem-ch26", chapterName: "Aromatic Hydrocarbon", unit: "Organic Chemistry" },
+    {
+      id: "chem-ch26",
+      chapterName: "Aromatic Hydrocarbon",
+      unit: "Organic Chemistry",
+    },
 
     // Inorganic Chemistry (Unit 3)
-    { id: "chem-ch27", chapterName: "Transition Metals", unit: "Inorganic Chemistry" },
     {
-       id: "chem-ch28", 
-       chapterName: "Studies of Heavy Metals", unit: "Inorganic Chemistry",
-       subtopics:[
-        {id:"chem-ch28-st1", name:"Copper"}, 
-        {id:"chem-ch28-st2", name:"Zinc"}, 
-        {id:"chem-ch28-st3", name:"Mercury"}, 
-        {id:"chem-ch28-st4", name:"Iron"}, 
-        {id:"chem-ch28-st5", name:"Silver"}, 
-       ]
-    },
-    {
-       id: "chem-ch29", 
-       chapterName: "Non-Metals", 
-       unit: "Inorganic Chemistry",
-       subtopics:[
-        {id:"chem-ch29-st1", name:"Hydrogen"},
-        {id:"chem-ch29-st2", name:"Oxygen and Ozone"},
-        {id:"chem-ch29-st3", name:"Nitrogen"},
-        {id:"chem-ch29-st4", name:"Halogen"},
-        {id:"chem-ch29-st5", name:"Carbon"},
-        {id:"chem-ch29-st6", name:"Phosphorus"},
-        {id:"chem-ch29-st7", name:"Sulphur and its Compounds"},
-       ]
-    },
-    { 
-      id: "chem-ch30", 
-      chapterName: "Metals", 
+      id: "chem-ch27",
+      chapterName: "Transition Metals",
       unit: "Inorganic Chemistry",
-      subtopics:[
-        {id:"chem-30-st1", name:"Metallurgy"},
-        {id:"chem-30-st2", name:"Alkali Metals"},
-        {id:"chem-30-st3", name:"Alkaline Earth Meral"},
-      ]
     },
-    { id: "chem-ch31", chapterName: "Bio-Inorganic Chemistry", unit: "Inorganic Chemistry" },
-
+    {
+      id: "chem-ch28",
+      chapterName: "Studies of Heavy Metals",
+      unit: "Inorganic Chemistry",
+      subtopics: [
+        { id: "chem-ch28-st1", name: "Copper" },
+        { id: "chem-ch28-st2", name: "Zinc" },
+        { id: "chem-ch28-st3", name: "Mercury" },
+        { id: "chem-ch28-st4", name: "Iron" },
+        { id: "chem-ch28-st5", name: "Silver" },
+      ],
+    },
+    {
+      id: "chem-ch29",
+      chapterName: "Non-Metals",
+      unit: "Inorganic Chemistry",
+      subtopics: [
+        { id: "chem-ch29-st1", name: "Hydrogen" },
+        { id: "chem-ch29-st2", name: "Oxygen and Ozone" },
+        { id: "chem-ch29-st3", name: "Nitrogen" },
+        { id: "chem-ch29-st4", name: "Halogen" },
+        { id: "chem-ch29-st5", name: "Carbon" },
+        { id: "chem-ch29-st6", name: "Phosphorus" },
+        { id: "chem-ch29-st7", name: "Sulphur and its Compounds" },
+      ],
+    },
+    {
+      id: "chem-ch30",
+      chapterName: "Metals",
+      unit: "Inorganic Chemistry",
+      subtopics: [
+        { id: "chem-30-st1", name: "Metallurgy" },
+        { id: "chem-30-st2", name: "Alkali Metals" },
+        { id: "chem-30-st3", name: "Alkaline Earth Meral" },
+      ],
+    },
+    {
+      id: "chem-ch31",
+      chapterName: "Bio-Inorganic Chemistry",
+      unit: "Inorganic Chemistry",
+    },
 
     // Applied Chemistry (Unit 4)
     { id: "chem-ch32", chapterName: "Cement", unit: "Applied Chemistry" },
-    { id: "chem-ch33", chapterName: "Paper and Pulp", unit: "Applied Chemistry" },
-    { id: "chem-ch34", chapterName: "Nuclear Chemistry and Application of ratioactivity", unit: "Applied Chemistry" },
-    { id: "chem-ch35", chapterName: "Polymers, Dyes and Drugs", unit: "Applied Chemistry" },
-    { id: "chem-ch36", chapterName: "Fundamentals of Applied Chemistry", unit: "Applied Chemistry" },
-    { id: "chem-ch37", chapterName: "Modern Chemical Manufactures", unit: "Applied Chemistry" },
+    {
+      id: "chem-ch33",
+      chapterName: "Paper and Pulp",
+      unit: "Applied Chemistry",
+    },
+    {
+      id: "chem-ch34",
+      chapterName: "Nuclear Chemistry and Application of ratioactivity",
+      unit: "Applied Chemistry",
+    },
+    {
+      id: "chem-ch35",
+      chapterName: "Polymers, Dyes and Drugs",
+      unit: "Applied Chemistry",
+    },
+    {
+      id: "chem-ch36",
+      chapterName: "Fundamentals of Applied Chemistry",
+      unit: "Applied Chemistry",
+    },
+    {
+      id: "chem-ch37",
+      chapterName: "Modern Chemical Manufactures",
+      unit: "Applied Chemistry",
+    },
   ],
 
   zoology: [
@@ -213,26 +329,42 @@ export const neetData = {
     { id: "bot-ch11", chapterName: "Families of Angiosperms" },
     { id: "bot-ch12", chapterName: "Organism and Population" },
     { id: "bot-ch13", chapterName: "Eco System and Succession" },
-    { id: "bot-ch14", chapterName: "Ecological Adaptations and Environmental Issues" },
+    {
+      id: "bot-ch14",
+      chapterName: "Ecological Adaptations and Environmental Issues",
+    },
     { id: "bot-ch15", chapterName: "Vegetation" },
     { id: "bot-ch16", chapterName: "Tools to Cytology and Biomolecules" },
     { id: "bot-ch17", chapterName: "Cytology" },
     { id: "bot-ch18", chapterName: "Cell Cycle and Cell Division" },
-    { id: "bot-ch19", chapterName: "Mendelian Genetics (Basis of Inheritance)" },
-    { id: "bot-ch20", chapterName: "Chromosomal Basis of Inheritance (Linkage and Sex Linked Inheritance)" },
+    {
+      id: "bot-ch19",
+      chapterName: "Mendelian Genetics (Basis of Inheritance)",
+    },
+    {
+      id: "bot-ch20",
+      chapterName:
+        "Chromosomal Basis of Inheritance (Linkage and Sex Linked Inheritance)",
+    },
     { id: "bot-ch21", chapterName: "Molecular Basis of Inheritance" },
     { id: "bot-ch22", chapterName: "Plant Anatomy" },
-    { id: "bot-ch23", chapterName: "Plant Water Relation / Transport in Plant / Mineral Nutrition" },
+    {
+      id: "bot-ch23",
+      chapterName:
+        "Plant Water Relation / Transport in Plant / Mineral Nutrition",
+    },
     { id: "bot-ch24", chapterName: "Plant Photosynthesis" },
     { id: "bot-ch25", chapterName: "Plant Respiration" },
     { id: "bot-ch26", chapterName: "Plant Hormones" },
     { id: "bot-ch27", chapterName: "Plant Growth and Movements" },
-    { id: "bot-ch28", chapterName: "Sexual Reproduction in Angiosperms / Embryology" },
+    {
+      id: "bot-ch28",
+      chapterName: "Sexual Reproduction in Angiosperms / Embryology",
+    },
     { id: "bot-ch29", chapterName: "Biotechnology" },
   ],
 
   "mental-ability-test": [
-
     // Unit 1: Numerical Reasoning
     { id: "mat-ch1", chapterName: "Percentage" },
     { id: "mat-ch2", chapterName: "Profit and Loss" },

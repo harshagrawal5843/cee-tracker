@@ -19,9 +19,7 @@ export function CircularProgress({ percentage = 0, size = 160 }) {
     <div className="flex flex-col items-center gap-4">
       <div className="relative" style={{ width: size, height: size }}>
         {/* Background glow effect */}
-        <div
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 dark:from-blue-500/20 dark:to-cyan-500/20 blur-lg"
-        />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 dark:from-blue-500/20 dark:to-cyan-500/20 blur-lg" />
 
         {/* SVG Circle */}
         <svg

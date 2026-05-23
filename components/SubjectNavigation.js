@@ -13,7 +13,7 @@ const subjectIcons = {
 
 export function SubjectNavigation({ currentSubject, subjects }) {
   return (
-    <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+    <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
       {subjects.map((subject) => {
         const isActive = subject === currentSubject;
         const displayName = getSubjectDisplayName(subject);
@@ -22,11 +22,11 @@ export function SubjectNavigation({ currentSubject, subjects }) {
             key={subject}
             href={`/subject/${subject}`}
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200
+              flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border
               ${
                 isActive
-                  ? "bg-blue-600 text-white dark:bg-blue-500"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  ? "bg-blue-600 text-white border-blue-600 shadow-sm dark:bg-blue-500 dark:border-blue-500"
+                  : "bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-600"
               }
             `}
           >

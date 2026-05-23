@@ -84,11 +84,7 @@ export function LoginComponent() {
             disabled={loading}
             className="w-full py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
           >
-            {loading
-              ? "Loading..."
-              : isSignup
-              ? "Create Account"
-              : "Sign In"}
+            {loading ? "Loading..." : isSignup ? "Create Account" : "Sign In"}
           </button>
         </form>
 
@@ -108,7 +104,8 @@ export function LoginComponent() {
         {/* Info Box */}
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
           <p className="text-xs text-blue-800 dark:text-blue-200">
-            💡 <strong>Demo Tip:</strong> Sign up with any email. Your progress will sync across all devices!
+            💡 <strong>Demo Tip:</strong> Sign up with any email. Your progress
+            will sync across all devices!
           </p>
         </div>
       </div>

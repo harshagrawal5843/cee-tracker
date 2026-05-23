@@ -53,7 +53,6 @@ Primary user-facing routes in the app (App Router):
 - `/study-timer` — Dedicated Study Timer page (app/study-timer/page.js)
 - `/challenge-history` — Challenge history and stats (app/challenge-history/page.js)
 - `/login` — Sign-in page (components/LoginComponent.js used in auth flows)
-- `/progress` — (If present) aggregated progress view — otherwise see Dashboard
 
 API routes:
 
@@ -206,11 +205,3 @@ See: [app/api/generate-daily-plan/route.js](app/api/generate-daily-plan/route.js
 No license file included. Add a `LICENSE` file or contact the project owner for licensing terms.
 
 ---
-
-Would you like me to:
-
-- (A) Add the screenshot files under `public/screenshots/` automatically and embed them into this README?
-- (B) Run `npx prettier --write README.md` and commit the change?
-- (C) Also create a short CONTRIBUTING.md and a simple developer checklist?
-
-Tell me which actions to take next and I'll proceed.

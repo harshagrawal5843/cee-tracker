@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import {
   getDailyDateKey,
-  migrateAndSyncTimerData
+  migrateAndSyncTimerData,
+  readStudyTimerHistoryMap 
 } from "@/lib/dailyChallenge";
 import { 
   writeStudyTimerStateRemote, 
-  subscribeToStudyTimerState
+  subscribeToStudyTimerState,
+  writeStudyTimerHistoryRemote 
 } from "@/lib/storage";
 
 export function StudyTimer() {
@@ -25,24 +27,38 @@ export function StudyTimer() {
     todayBaseTime: 0,
   });
 
-  // What the user actually sees on screen (updates every second)
   const [displaySessionTime, setDisplaySessionTime] = useState(0);
   const [displayTodayTime, setDisplayTodayTime] = useState(0);
 
-  // 1. Initial Migration & Real-Time Listener setup
+  // NEW HELPER: Syncs the current time directly into the History Log
+  const syncHistoryMap = (totalSeconds) => {
+    if (!user?.uid) return;
+    const currentHistory = readStudyTimerHistoryMap();
+    const existing = currentHistory[serverState.dateKey]?.seconds || 0;
+    
+    // Only push if the time has actually increased
+    if (totalSeconds > existing) {
+       currentHistory[serverState.dateKey] = {
+          seconds: totalSeconds,
+          updatedAt: new Date().toISOString()
+       };
+       if (typeof window !== "undefined") {
+          window.localStorage.setItem("study-time-history", JSON.stringify(currentHistory));
+       }
+       writeStudyTimerHistoryRemote(currentHistory, user.uid);
+    }
+  };
+
   useEffect(() => {
     setIsClient(true);
     let unsubscribe = () => {};
 
     const setupTimer = async () => {
       if (user?.uid) {
-        // Run migration securely in the background
         await migrateAndSyncTimerData(user.uid);
         
-        // Listen to Firebase Real-time updates
         unsubscribe = subscribeToStudyTimerState(user.uid, (remoteState) => {
           if (remoteState && remoteState.version === "v2") {
-            // If the date rolled over, force a reset for the new day
             if (remoteState.dateKey !== getDailyDateKey()) {
               handleNewDayRollover(remoteState, user.uid);
             } else {
@@ -57,7 +73,6 @@ export function StudyTimer() {
     return () => unsubscribe();
   }, [user?.uid]);
 
-  // Handle midnight rollover
   const handleNewDayRollover = (oldState, uid) => {
     const newState = {
       version: "v2",
@@ -71,7 +86,7 @@ export function StudyTimer() {
     setServerState(newState);
   };
 
-  // 2. The Visual Ticker (Updates screen every second, DOES NOT write to DB)
+  // The Visual Ticker + Periodic History Backup
   useEffect(() => {
     const updateDisplay = () => {
       let currentSession = serverState.sessionAccumulated;
@@ -82,16 +97,20 @@ export function StudyTimer() {
       }
 
       setDisplaySessionTime(currentSession);
-      setDisplayTodayTime(serverState.todayBaseTime + currentSession);
+      const currentToday = serverState.todayBaseTime + currentSession;
+      setDisplayTodayTime(currentToday);
+
+      // Periodically backup history (every 30s) if the user closes the tab without pausing
+      if (serverState.isRunning && currentSession > 0 && currentSession % 30 === 0) {
+        syncHistoryMap(currentToday);
+      }
     };
 
-    updateDisplay(); // Run immediately
+    updateDisplay();
     const interval = setInterval(updateDisplay, 1000);
-
     return () => clearInterval(interval);
   }, [serverState]);
 
-  // 3. Action Buttons (Push to Firebase instantly)
   const toggleTimer = () => {
     if (!user?.uid) return;
 
@@ -99,7 +118,6 @@ export function StudyTimer() {
     const now = Date.now();
     let nextAccumulated = serverState.sessionAccumulated;
 
-    // If we are pausing, lock in the time that just passed
     if (!nextRunningState && serverState.sessionStartTime) {
       nextAccumulated += Math.floor((now - serverState.sessionStartTime) / 1000);
     }
@@ -111,24 +129,33 @@ export function StudyTimer() {
       sessionStartTime: nextRunningState ? now : null,
     };
 
-    // Optimistic UI update, then push to server
     setServerState(newState);
     writeStudyTimerStateRemote(newState, user.uid);
+
+    // Explicitly save to History Log when user hits Pause
+    if (!nextRunningState) {
+      syncHistoryMap(serverState.todayBaseTime + nextAccumulated);
+    }
   };
 
   const resetSession = () => {
     if (!user?.uid) return;
+
+    const totalBeforeReset = serverState.todayBaseTime + displaySessionTime;
 
     const newState = {
       ...serverState,
       isRunning: false,
       sessionAccumulated: 0,
       sessionStartTime: null,
-      todayBaseTime: serverState.todayBaseTime + displaySessionTime // Move session time to base time
+      todayBaseTime: totalBeforeReset 
     };
 
     setServerState(newState);
     writeStudyTimerStateRemote(newState, user.uid);
+    
+    // Explicitly save to History Log when user hits Reset
+    syncHistoryMap(totalBeforeReset);
   };
 
   const formatTime = (seconds) => {
@@ -148,7 +175,6 @@ export function StudyTimer() {
           : "border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800"
       }`}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <span className={`text-3xl transition-transform ${serverState.isRunning ? "animate-pulse" : ""}`}>
@@ -164,7 +190,6 @@ export function StudyTimer() {
         <div className={`w-4 h-4 rounded-full ${serverState.isRunning ? "bg-green-500 shadow-lg shadow-green-500" : "bg-gray-300 dark:bg-gray-600"}`}></div>
       </div>
 
-      {/* Main Timer Display */}
       <div className="mb-8 text-center">
         <div className="mb-6">
           <p className="text-xs uppercase font-semibold tracking-widest text-gray-600 dark:text-gray-400 mb-3">Session Time</p>
@@ -184,7 +209,6 @@ export function StudyTimer() {
         </div>
       </div>
 
-      {/* Button Controls */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         <button
           onClick={toggleTimer}

@@ -32,7 +32,6 @@ export function TodaysPlan() {
 
     const loadPlan = async () => {
       try {
-        // Always fetch the global plan from the server API which reads/writes dailyPlans in Firestore
         const response = await fetch("/api/generate-daily-plan", {
           method: "GET",
         });
@@ -59,10 +58,7 @@ export function TodaysPlan() {
     };
 
     loadPlan();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -70,9 +66,7 @@ export function TodaysPlan() {
 
     const loadProgress = async () => {
       if (!dateKey || !user?.uid) {
-        if (!cancelled) {
-          setProgressMap({});
-        }
+        if (!cancelled) setProgressMap({});
         return;
       }
 
@@ -83,17 +77,12 @@ export function TodaysPlan() {
         }
       } catch (error) {
         console.error("Error loading daily progress:", error);
-        if (!cancelled) {
-          setProgressMap({});
-        }
+        if (!cancelled) setProgressMap({});
       }
     };
 
     loadProgress();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [dateKey, user?.uid]);
 
   const completedCount = useMemo(() => {
@@ -123,23 +112,27 @@ export function TodaysPlan() {
       selectedTask.subject,
       selectedTask.chapter,
     );
-    const updatedTask = {
-      ...selectedTask,
-      status: "completed",
-      result,
-      completedAt: result.completedAt,
-    };
-
-    const updatedTasks = (plan?.tasks || []).map((task) =>
-      getTaskProgressKey(task.subject, task.chapter) === taskKey
-        ? updatedTask
-        : task,
-    );
-
+    
+    // 1. Safely accumulate new progress into the existing progress map
     const nextProgress = {
       ...progressMap,
       [taskKey]: result,
     };
+
+    // 2. CRITICAL FIX: Rebuild all tasks with their completed status directly from the progress map!
+    // This prevents a page reload from wiping out the status of previously completed tasks.
+    const updatedTasks = (plan?.tasks || []).map((task) => {
+      const tk = getTaskProgressKey(task.subject, task.chapter);
+      if (nextProgress[tk]) {
+        return {
+          ...task,
+          status: "completed",
+          result: nextProgress[tk],
+          completedAt: nextProgress[tk].completedAt || new Date().toISOString()
+        };
+      }
+      return task;
+    });
 
     const updatedPlan = {
       ...plan,
@@ -148,20 +141,19 @@ export function TodaysPlan() {
 
     setPlan(updatedPlan);
     setProgressMap(nextProgress);
+    
     // Persist per-user progress to Firestore
     await writeDailyProgress(nextProgress, dateKey, user?.uid);
 
+    // 3. Check streak securely against the reconstructed array
     if (
       updatedTasks.length > 0 &&
-      updatedTasks.every((task) => {
-        const tk = getTaskProgressKey(task.subject, task.chapter);
-        return Boolean(nextProgress[tk]);
-      })
+      updatedTasks.every((task) => task.status === "completed")
     ) {
-      incrementStudyStreakIfNeeded(dateKey, user?.uid);
+      await incrementStudyStreakIfNeeded(dateKey, user?.uid);
     }
 
-    // Save final completed tasks/attempt to per-user challenge history in Firestore
+    // Save final securely merged tasks to challenge history
     await writeDailyChallengeHistory(
       {
         date: dateKey,
@@ -172,6 +164,7 @@ export function TodaysPlan() {
       },
       user?.uid || null,
     );
+    
     setQuizOpen(false);
     setSelectedTask(null);
   };
@@ -207,9 +200,7 @@ export function TodaysPlan() {
     );
   }
 
-  if (!plan) {
-    return null;
-  }
+  if (!plan) return null;
 
   return (
     <>

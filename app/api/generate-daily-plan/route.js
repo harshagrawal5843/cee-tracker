@@ -11,6 +11,24 @@ const MODEL_CANDIDATES = [
   "gemini-1.5-flash",
 ];
 
+const FIRESTORE_TIMEOUT_MS = 3000;
+const GEMINI_TIMEOUT_MS = 4000;
+
+function withTimeout(promise, timeoutMs, label) {
+  let timeoutId;
+
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(label));
+    }, timeoutMs);
+  });
+
+  return Promise.race([
+    promise.finally(() => clearTimeout(timeoutId)),
+    timeoutPromise,
+  ]);
+}
+
 function hashString(value) {
   let hash = 0;
   const input = String(value || "");
@@ -295,6 +313,10 @@ function buildFallbackPlan(dateKey) {
 
 async function generateWithGemini(dateKey) {
   const candidates = buildDailyCandidates(dateKey);
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY is not configured.");
+  }
+
   const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
   const prompt = `You are a study planner for CEE Tracker.
@@ -346,40 +368,31 @@ Output JSON ONLY:
   ]
 }`;
 
-  for (const modelName of MODEL_CANDIDATES) {
-    const model = ai.getGenerativeModel({ model: modelName });
+  const model = ai.getGenerativeModel({ model: MODEL_CANDIDATES[0] });
 
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        const result = await model.generateContent({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.2,
-            topP: 1,
-            topK: 1,
-            responseMimeType: "application/json",
-          },
-        });
+  try {
+    const result = await withTimeout(
+      model.generateContent({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.2,
+          topP: 1,
+          topK: 1,
+          responseMimeType: "application/json",
+        },
+      }),
+      GEMINI_TIMEOUT_MS,
+      "Gemini request timed out.",
+    );
 
-        const text = result.response.text();
-        const parsed = JSON.parse(text);
-        const normalized = normalizePlan(parsed, dateKey);
-        if (normalized.tasks.length >= 4) {
-          return normalized;
-        }
-      } catch (error) {
-        const message = String(error?.message || error || "");
-        const isOverloaded =
-          message.includes("503") || message.includes("high demand");
-        if (!isOverloaded && attempt === 1) {
-          throw error;
-        }
-        if (!isOverloaded && attempt === 0) {
-          continue;
-        }
-        break;
-      }
+    const text = result.response.text();
+    const parsed = JSON.parse(text);
+    const normalized = normalizePlan(parsed, dateKey);
+    if (normalized.tasks.length >= 4) {
+      return normalized;
     }
+  } catch (error) {
+    throw error;
   }
 
   throw new Error("Gemini returned an invalid daily plan.");
@@ -390,7 +403,11 @@ async function getOrCreateDailyPlan(dateKey) {
   let planSnap = null;
 
   try {
-    planSnap = await getDoc(planRef);
+    planSnap = await withTimeout(
+      getDoc(planRef),
+      FIRESTORE_TIMEOUT_MS,
+      "dailyPlans read timed out.",
+    );
   } catch (error) {
     console.warn(
       "dailyPlans read failed, falling back to generation:",
@@ -425,7 +442,11 @@ async function getOrCreateDailyPlan(dateKey) {
   };
 
   try {
-    await setDoc(planRef, payload, { merge: true });
+    await withTimeout(
+      setDoc(planRef, payload, { merge: true }),
+      FIRESTORE_TIMEOUT_MS,
+      "dailyPlans write timed out.",
+    );
   } catch (error) {
     console.warn(
       "dailyPlans write failed, returning generated plan only:",

@@ -156,7 +156,7 @@ export function TodaysPlan() {
       updatedTasks.every((task) => {
         const tk = getTaskProgressKey(task.subject, task.chapter);
         return Boolean(nextProgress[tk]);
-      }))
+      })
     ) {
       incrementStudyStreakIfNeeded(dateKey, user?.uid);
     }

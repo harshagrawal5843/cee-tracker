@@ -153,7 +153,10 @@ export function TodaysPlan() {
 
     if (
       updatedTasks.length > 0 &&
-      updatedTasks.every((task) => task.status === "completed")
+      updatedTasks.every((task) => {
+        const tk = getTaskProgressKey(task.subject, task.chapter);
+        return Boolean(nextProgress[tk]);
+      }))
     ) {
       incrementStudyStreakIfNeeded(dateKey, user?.uid);
     }

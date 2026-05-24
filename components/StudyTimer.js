@@ -1,17 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/AuthContext";
 import {
   getDailyDateKey,
   readStudyTimerState,
   syncStudyTimerDay,
   updateStudyTimerSnapshot,
+  readStudyTimerHistoryMap,
+  migrateAndSyncTimerData
 } from "@/lib/dailyChallenge";
+import { 
+  writeStudyTimerStateRemote, 
+  writeStudyTimerHistoryRemote 
+} from "@/lib/storage";
 
 export function StudyTimer() {
-  const [elapsedTime, setElapsedTime] = useState(0); // in seconds
+  const { user } = useAuth(); // Get user to sync to Firebase
+  const [elapsedTime, setElapsedTime] = useState(0); 
   const [isRunning, setIsRunning] = useState(false);
-  const [todayTime, setTodayTime] = useState(0); // accumulated time today
+  const [todayTime, setTodayTime] = useState(0); 
   const [dateKey, setDateKey] = useState(getDailyDateKey());
   const [isClient, setIsClient] = useState(false);
 
@@ -23,11 +31,15 @@ export function StudyTimer() {
     setIsRunning(timerState.isRunning);
   };
 
-  // Initialize timer from localStorage
+  // 1. Initialize timer & Trigger Migration
   useEffect(() => {
     setIsClient(true);
-
     syncCurrentDay();
+
+    // Migrate past 2-3 days of local data to Firebase on load
+    if (user?.uid) {
+      migrateAndSyncTimerData(user.uid);
+    }
 
     const syncTimer = () => {
       const timerState = readStudyTimerState();
@@ -52,9 +64,9 @@ export function StudyTimer() {
       window.removeEventListener("study-timer-updated", syncTimer);
       clearInterval(rolloverInterval);
     };
-  }, [dateKey]);
+  }, [dateKey, user?.uid]);
 
-  // Timer interval
+  // 2. Fast Local Interval (1 second ticks)
   useEffect(() => {
     if (!isRunning) return;
 
@@ -68,7 +80,6 @@ export function StudyTimer() {
 
       setElapsedTime((prev) => {
         const newTime = prev + 1;
-
         setTodayTime((currentTodayTime) => {
           const newTodayTime = currentTodayTime + 1;
           updateStudyTimerSnapshot({
@@ -79,7 +90,6 @@ export function StudyTimer() {
           });
           return newTodayTime;
         });
-
         return newTime;
       });
     }, 1000);
@@ -87,38 +97,61 @@ export function StudyTimer() {
     return () => clearInterval(interval);
   }, [isRunning, dateKey]);
 
-  // Format time as HH:MM:SS
+  // 3. Slow Remote Sync (every 30 seconds to save Firebase quota)
+  useEffect(() => {
+    if (!isRunning || !user?.uid) return;
+
+    const remoteSyncInterval = setInterval(() => {
+      const currentState = readStudyTimerState();
+      const currentHistory = readStudyTimerHistoryMap();
+      
+      writeStudyTimerStateRemote(currentState, user.uid);
+      writeStudyTimerHistoryRemote(currentHistory, user.uid);
+    }, 30000);
+
+    return () => clearInterval(remoteSyncInterval);
+  }, [isRunning, user?.uid]);
+
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
 
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-      2,
-      "0",
-    )}:${String(secs).padStart(2, "0")}`;
+  const forceRemoteSync = (stateData) => {
+    if (!user?.uid) return;
+    writeStudyTimerStateRemote(stateData, user.uid);
+    writeStudyTimerHistoryRemote(readStudyTimerHistoryMap(), user.uid);
   };
 
   const toggleTimer = () => {
     const nextRunningState = !isRunning;
     setIsRunning(nextRunningState);
-    updateStudyTimerSnapshot({
+    
+    const newState = {
       dateKey,
       todayTime,
       elapsedTime,
       isRunning: nextRunningState,
-    });
+    };
+    
+    updateStudyTimerSnapshot(newState);
+    forceRemoteSync(newState); // Push to Firebase immediately on pause/start
   };
 
   const resetSession = () => {
-    updateStudyTimerSnapshot({
+    const newState = {
       dateKey,
       todayTime,
       elapsedTime: 0,
       isRunning: false,
-    });
+    };
+    
+    updateStudyTimerSnapshot(newState);
     setElapsedTime(0);
     setIsRunning(false);
+    forceRemoteSync(newState); // Push to Firebase immediately on reset
   };
 
   if (!isClient) {

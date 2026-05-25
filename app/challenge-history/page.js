@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
+import { useUserData, useDailyChallengeHistory } from "@/lib/UserDataContext";
 import { Navbar } from "@/components/Navbar";
 import { ceeSubjects, getSubjectDisplayName } from "@/data";
-import { readDailyChallengeHistory } from "@/lib/storage";
 
 function formatDateLabel(dateKey) {
   const date = new Date(`${dateKey}T00:00:00`);
@@ -35,48 +35,23 @@ function summarizeTask(task) {
 
 export default function ChallengeHistoryPage() {
   const { user, loading: authLoading } = useAuth();
+  const { loading: contextLoading } = useUserData();
+  const history = useDailyChallengeHistory();
   const router = useRouter();
-  const [history, setHistory] = useState([]);
-  const [ready, setReady] = useState(false);
   const [subjectFilter, setSubjectFilter] = useState("all");
+
+  /**
+   * TASK 4: Refactored to consume from UserDataContext
+   * ✅ Removed readDailyChallengeHistory() call - now using useDailyChallengeHistory() hook
+   * ✅ No more useEffect fetching history - context handles all syncing via single onSnapshot
+   * ✅ Real-time updates: when user completes tasks in another tab, history updates automatically
+   */
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
     }
   }, [user, authLoading, router]);
-
-  useEffect(() => {
-    if (authLoading) return;
-
-    let cancelled = false;
-
-    const loadHistory = async () => {
-      try {
-        const data = user
-          ? await readDailyChallengeHistory(user.uid)
-          : await readDailyChallengeHistory();
-        if (!cancelled) {
-          setHistory(Array.isArray(data) ? data : []);
-        }
-      } catch (error) {
-        console.error("Error loading daily challenge history:", error);
-        if (!cancelled) {
-          setHistory([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setReady(true);
-        }
-      }
-    };
-
-    loadHistory();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, authLoading]);
 
   const filteredHistory = useMemo(() => {
     if (subjectFilter === "all") return history;
@@ -105,7 +80,7 @@ export default function ChallengeHistoryPage() {
     };
   }, [history]);
 
-  if (!ready || authLoading) {
+  if (authLoading || contextLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

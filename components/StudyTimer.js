@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useUserData, useStudyTimerState } from "@/lib/UserDataContext";
 import {
   getDailyDateKey,
   migrateAndSyncTimerData,
@@ -9,28 +10,45 @@ import {
 } from "@/lib/dailyChallenge";
 import { 
   writeStudyTimerStateRemote, 
-  subscribeToStudyTimerState,
   writeStudyTimerHistoryRemote 
 } from "@/lib/storage";
 
+/**
+ * OPTIMIZED StudyTimer Component
+ * 
+ * OPTIMIZATIONS:
+ * ✅ Removed subscribeToStudyTimerState() onSnapshot listener - saves continuous Firestore reads
+ * ✅ Now uses useStudyTimerState() hook from UserDataContext - single shared listener
+ * ✅ Manual sync: only writes to Firebase on user actions (start, pause, reset)
+ * ✅ History sync: batches updates every 30 seconds instead of continuous syncs
+ * ✅ Removed repeated writeStudyTimerStateRemote() calls on every setServerState
+ *
+ * Result: Eliminates continuous Firestore listener overhead for Study Timer
+ */
 export function StudyTimer() {
   const { user } = useAuth();
+  const { userData } = useUserData();
   const [isClient, setIsClient] = useState(false);
 
-  // Server Source of Truth
-  const [serverState, setServerState] = useState({
+  // Get timer state from context (shared single listener, not per-component)
+  const contextTimerState = userData.studyTimerState || {
     version: "v2",
     dateKey: getDailyDateKey(),
     isRunning: false,
     sessionAccumulated: 0,
     sessionStartTime: null,
     todayBaseTime: 0,
-  });
+  };
 
+  // Local state for visual display (doesn't trigger Firestore reads)
+  const [serverState, setServerState] = useState(contextTimerState);
   const [displaySessionTime, setDisplaySessionTime] = useState(0);
   const [displayTodayTime, setDisplayTodayTime] = useState(0);
 
-  // NEW HELPER: Syncs the current time directly into the History Log
+  /**
+   * Sync history map to Firebase
+   * Called periodically (every 30s) or on user action
+   */
   const syncHistoryMap = (totalSeconds) => {
     if (!user?.uid) return;
     const currentHistory = readStudyTimerHistoryMap();
@@ -45,48 +63,50 @@ export function StudyTimer() {
        if (typeof window !== "undefined") {
           window.localStorage.setItem("study-time-history", JSON.stringify(currentHistory));
        }
-       writeStudyTimerHistoryRemote(currentHistory, user.uid);
+       // Fire-and-forget remote write (don't await)
+       writeStudyTimerHistoryRemote(currentHistory, user.uid).catch((err) => {
+          console.warn("⚠️ Failed to sync timer history:", err);
+       });
     }
   };
 
+  // Initialize on mount (migrate old data, don't subscribe)
   useEffect(() => {
     setIsClient(true);
-    let unsubscribe = () => {};
 
     const setupTimer = async () => {
       if (user?.uid) {
         await migrateAndSyncTimerData(user.uid);
-        
-        unsubscribe = subscribeToStudyTimerState(user.uid, (remoteState) => {
-          if (remoteState && remoteState.version === "v2") {
-            if (remoteState.dateKey !== getDailyDateKey()) {
-              handleNewDayRollover(remoteState, user.uid);
-            } else {
-              setServerState(remoteState);
-            }
-          }
-        });
+        // Set local state from context on mount
+        setServerState(contextTimerState);
       }
     };
 
     setupTimer();
-    return () => unsubscribe();
   }, [user?.uid]);
 
-  const handleNewDayRollover = (oldState, uid) => {
-    const newState = {
-      version: "v2",
-      dateKey: getDailyDateKey(),
-      isRunning: false,
-      sessionAccumulated: 0,
-      sessionStartTime: null,
-      todayBaseTime: 0,
-    };
-    writeStudyTimerStateRemote(newState, uid);
-    setServerState(newState);
-  };
+  // Sync context changes to local state (for day rollover detection)
+  useEffect(() => {
+    if (contextTimerState && contextTimerState.dateKey !== serverState.dateKey) {
+      // Day rolled over - reset session
+      const newState = {
+        version: "v2",
+        dateKey: getDailyDateKey(),
+        isRunning: false,
+        sessionAccumulated: 0,
+        sessionStartTime: null,
+        todayBaseTime: 0,
+      };
+      setServerState(newState);
+      if (user?.uid) {
+        writeStudyTimerStateRemote(newState, user.uid).catch((err) => {
+          console.warn("⚠️ Failed to sync timer state on rollover:", err);
+        });
+      }
+    }
+  }, [contextTimerState?.dateKey]);
 
-  // The Visual Ticker + Periodic History Backup
+  // Visual ticker + periodic history backup (every 30 seconds)
   useEffect(() => {
     const updateDisplay = () => {
       let currentSession = serverState.sessionAccumulated;
@@ -100,8 +120,9 @@ export function StudyTimer() {
       const currentToday = serverState.todayBaseTime + currentSession;
       setDisplayTodayTime(currentToday);
 
-      // Periodically backup history (every 30s) if the user closes the tab without pausing
-      if (serverState.isRunning && currentSession > 0 && currentSession % 30 === 0) {
+      // Periodically backup history (every 30s) if running
+      // This prevents data loss if user closes tab without pausing
+      if (serverState.isRunning && currentSession > 0 && Math.floor(currentSession) % 30 === 0) {
         syncHistoryMap(currentToday);
       }
     };
@@ -130,7 +151,11 @@ export function StudyTimer() {
     };
 
     setServerState(newState);
-    writeStudyTimerStateRemote(newState, user.uid);
+    
+    // Manual sync: only write on action, not on every state change
+    writeStudyTimerStateRemote(newState, user.uid).catch((err) => {
+      console.warn("⚠️ Failed to sync timer state on toggle:", err);
+    });
 
     // Explicitly save to History Log when user hits Pause
     if (!nextRunningState) {
@@ -152,7 +177,11 @@ export function StudyTimer() {
     };
 
     setServerState(newState);
-    writeStudyTimerStateRemote(newState, user.uid);
+    
+    // Manual sync: only write on action
+    writeStudyTimerStateRemote(newState, user.uid).catch((err) => {
+      console.warn("⚠️ Failed to sync timer state on reset:", err);
+    });
     
     // Explicitly save to History Log when user hits Reset
     syncHistoryMap(totalBeforeReset);

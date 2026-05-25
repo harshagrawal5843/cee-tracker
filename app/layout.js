@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "@/lib/AuthContext";
+import { UserDataProvider } from "@/lib/UserDataContext";
 import Script from "next/script";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -27,8 +28,10 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
         <AuthProvider>
-          <ThemeToggle />
-          <main className="flex-1">{children}</main>
+          <UserDataProvider>
+            <ThemeToggle />
+            <main className="flex-1">{children}</main>
+          </UserDataProvider>
         </AuthProvider>
       </body>
     </html>

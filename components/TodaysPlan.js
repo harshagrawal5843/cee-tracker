@@ -340,6 +340,7 @@ export function TodaysPlan() {
 
       {quizOpen && selectedTask ? (
         <QuizPage
+          isOpen={quizOpen}
           task={selectedTask}
           onComplete={handleQuizComplete}
           onClose={() => {
